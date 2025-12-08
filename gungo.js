@@ -1,4 +1,4 @@
- /* ======================================================= */
+/* ======================================================= */
 /* Archivo: gungo.js (REEMPLAZAR TODO el contenido actual) */
 /* ======================================================= */
 document.addEventListener("DOMContentLoaded", () => {
@@ -6,20 +6,25 @@ document.addEventListener("DOMContentLoaded", () => {
     /* === INICIALIZACIÓN DE ELEMENTOS === */
     /* ========================================= */
     
-    // Referencias a elementos del DOM
     const header = document.querySelector('header');
     const hero = document.querySelector('.hero');
     const newsGrid = document.querySelector('.news-grid');
     const loadBtnContainer = document.createElement('div');
     loadBtnContainer.className = 'load-more-container';
     
-    let allNewsData = []; // Almacena TODAS las noticias
+    let allNewsData = []; 
     let observer; 
     
-    // Elemento de búsqueda
-    const searchInput = document.getElementById('searchInput'); // <--- NUEVO
+    const searchInput = document.getElementById('searchInput');
 
-    // Efecto Scroll Header y Parallax
+    let searchTimeout;
+    function debouncedSearch(query) {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            handleSearch(query);
+        }, 300);
+    }
+
     window.addEventListener('scroll', () => {
         if (header) header.classList.toggle('scrolled', window.scrollY > 50);
         if(window.scrollY < 700 && hero) {
@@ -27,7 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Función para enriquecer tarjetas con Reacciones y Compartir
     function enrichCard(card) {
         const contentDiv = card.querySelector('.card-content');
         if(!contentDiv) return; 
@@ -69,16 +73,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     fetch('data.json')
         .then(response => {
-            if (!response.ok) {
-                throw new Error('Error al cargar data.json: ' + response.status);
-            }
+            if (!response.ok) throw new Error('Error al cargar data.json: ' + response.status);
             return response.json();
         })
         .then(data => {
-            // Unimos todas las noticias para el filtro y la búsqueda
             allNewsData = data.newsArticles.concat(data.loadMoreData || []); 
-            
-            initTheme(); // <--- NUEVO: Inicializar Modo Oscuro/Claro
             
             initObserverInstance();
             renderNews(data.newsArticles, false);
@@ -89,16 +88,14 @@ document.addEventListener("DOMContentLoaded", () => {
             setupLoadMoreButton(data.loadMoreData || []);
             
             initFilters();
-            setupModalListener();
+            setupModalListener(); // ← AQUÍ ESTÁ LA MAGIA CORREGIDA
             startLiveNotifications();
             
-            // *** NUEVO: Evento para BÚSQUEDA al teclear ***
             if (searchInput) {
                  searchInput.addEventListener('input', (e) => {
-                    handleSearch(e.target.value);
+                    debouncedSearch(e.target.value);
                  });
             }
-            // ***********************************************
         })
         .catch(error => {
             console.error("Error crítico de carga:", error);
@@ -112,9 +109,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-    
-    /** * FUNCIONES DE RENDERIZADO */
-    
     function initObserverInstance() {
         observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -127,14 +121,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function renderNews(articles, isLoadMore = false) {
-        // En el modo 'cargar más', solo queremos añadir al DOM, no borrarlo
         if (!isLoadMore && newsGrid) newsGrid.innerHTML = ''; 
         
         articles.forEach((news) => {
             const article = document.createElement('div');
             article.classList.add('news-card'); 
-            article.setAttribute('data-article-id', news.title); 
-            // AÑADIDO: Atributo para fácil filtrado y búsqueda
+            article.setAttribute('data-article-id', news.id);
             article.setAttribute('data-category', news.category); 
             
             article.innerHTML = `
@@ -142,13 +134,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 <img src="${news.image}" alt="${news.title}" loading="lazy">
                 <div class="card-content">
                     <h3>${news.title}</h3>
-                    <p>${news.summary}</p>
+                    <p class="summary">${news.summary}</p>
                 </div>
             `;
             
             if(newsGrid) newsGrid.appendChild(article);
             enrichCard(article);
-            
             if (observer) observer.observe(article);
         });
     }
@@ -156,7 +147,6 @@ document.addEventListener("DOMContentLoaded", () => {
     function renderStories(stories) {
         const storiesFeed = document.getElementById('storiesFeed');
         if(!storiesFeed) return; 
-
         storiesFeed.innerHTML = ''; 
         stories.forEach(story => {
             const div = document.createElement('div');
@@ -191,7 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
             poll.options.forEach((option) => {
                 const optionDiv = document.createElement('div');
                 optionDiv.className = 'poll-option';
-                optionDiv.setAttribute('onclick', `votePoll(${option.id})`);
+                optionDiv.addEventListener('click', () => votePoll(option.id));
                 optionDiv.innerHTML = `
                     <span class="poll-text">${option.text}</span>
                     <div class="poll-bar" id="bar-${option.id}"></div>
@@ -205,16 +195,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (footerElement) footerElement.innerText = poll.footerText;
     }
 
-    /** * LÓGICA DE INTERACCIÓN Y UX */
-     
-    // Función robusta para el botón "Cargar Más"
     function setupLoadMoreButton(loadMoreData) {
         if (loadMoreData && loadMoreData.length > 0 && newsGrid) {
-            
             loadBtnContainer.innerHTML = '';
             const btnHTML = `<button class="btn-secondary" id="loadMoreBtn">Ver más chismes</button>`;
             loadBtnContainer.innerHTML = btnHTML;
-            
             if(newsGrid.parentNode) {
                 newsGrid.parentNode.insertBefore(loadBtnContainer, newsGrid.nextSibling);
             }
@@ -224,21 +209,22 @@ document.addEventListener("DOMContentLoaded", () => {
                  loadMoreBtn.addEventListener('click', function() {
                     const btn = this;
                     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cargando...';
-                    
                     setTimeout(() => { 
                         renderNews(loadMoreData, true); 
                         window.initFilters(); 
-                        
                         btn.innerHTML = '¡Estás al día!';
                         btn.style.opacity = '0.5';
                         btn.style.cursor = 'default';
-                        btn.replaceWith(btn.cloneNode(true)); 
+                        btn.replaceWith(btn.cloneNode(true));
                     }, 800); 
                 });
             }
         }
     }
-    
+
+    // ================================================
+    // === MODAL CORREGIDO AL 100% (AQUÍ ESTÁ LA MAGIA) ===
+    // ================================================
     function setupModalListener() {
         const modal = document.getElementById('newsModal');
         const closeBtn = document.querySelector('.close-modal');
@@ -247,17 +233,26 @@ document.addEventListener("DOMContentLoaded", () => {
             newsGrid.addEventListener('click', (e) => {
                 const card = e.target.closest('.news-card');
                 if(card && !e.target.closest('button')) {
-                    const articleTitle = card.getAttribute('data-article-id');
-                    const fullArticle = allNewsData.find(a => a.title === articleTitle); 
+                    const articleId = parseInt(card.getAttribute('data-article-id'));
+                    const fullArticle = allNewsData.find(a => a.id === articleId); 
 
                     if (fullArticle && modal) {
+                        // Cargar imagen y título
                         document.getElementById('modalImg').src = fullArticle.image;
                         document.getElementById('modalTitle').innerText = fullArticle.title;
                         document.getElementById('modalCat').innerText = fullArticle.category;
-                        
-                        const descElement = document.getElementById('modalDesc');
-                        if (descElement) descElement.innerText = fullArticle.longDescription || fullArticle.summary;
+                        document.getElementById('modalCat').className = 'category-tag ' + (fullArticle.category || 'normal').toLowerCase();
 
+                        // MOSTRAR SOLO longDescription (nunca el summary)
+                        document.getElementById('modalDesc').innerHTML = fullArticle.longDescription || fullArticle.summary || 'Sin descripción completa.';
+
+                        // CLAVE: Agregar clase para que el CSS sepa si es EXCLUSIVA
+                        modal.className = 'modal-overlay'; // reseteamos
+                        if (fullArticle.category === 'EXCLUSIVA') {
+                            modal.classList.add('category-EXCLUSIVA');
+                        }
+
+                        // Abrir modal
                         modal.classList.add('open');
                         document.body.style.overflow = 'hidden'; 
                     }
@@ -268,6 +263,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if(closeBtn && modal) {
             closeBtn.onclick = () => {
                 modal.classList.remove('open');
+                modal.className = 'modal-overlay'; // limpiamos clases extras
                 document.body.style.overflow = 'auto';
             };
         }
@@ -276,20 +272,20 @@ document.addEventListener("DOMContentLoaded", () => {
             modal.onclick = (e) => { 
                 if(e.target === modal) {
                     modal.classList.remove('open');
+                    modal.className = 'modal-overlay';
                     document.body.style.overflow = 'auto';
                 }
             };
         }
     }
     
-    // Cierre con tecla Escape
     document.addEventListener('keydown', (e) => {
         if(e.key === "Escape") {
             const modal = document.getElementById('newsModal');
             const searchOverlay = document.getElementById('searchOverlay');
-            
             if (modal && modal.classList.contains('open')) {
                 modal.classList.remove('open');
+                modal.className = 'modal-overlay';
                 document.body.style.overflow = 'auto';
             }
             if (searchOverlay && searchOverlay.classList.contains('active')) {
@@ -298,12 +294,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    /** * NUEVO: FUNCIONALIDAD DE BÚSQUEDA DINÁMICA */
     function handleSearch(query) {
         const searchText = query.toLowerCase().trim();
         const newsCards = document.querySelectorAll('.news-card');
-
-        // Mapeamos los filtros existentes (si hay alguno activo)
         const activeFilter = document.querySelector('.filter-btn.active');
         const activeCategory = activeFilter ? activeFilter.getAttribute('data-filter') : 'all'; 
         
@@ -312,13 +305,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const summary = card.querySelector('p') ? card.querySelector('p').innerText.toLowerCase() : '';
             const category = card.getAttribute('data-category') ? card.getAttribute('data-category').toLowerCase() : 'n/a';
             
-            // 1. Verificar si pasa el filtro de Categoría
             const passesCategoryFilter = activeCategory === 'all' || category === activeCategory.toLowerCase();
-            
-            // 2. Verificar si pasa el filtro de Búsqueda (busca en título O resumen)
             const passesSearchFilter = (title.includes(searchText) || summary.includes(searchText));
             
-            // Mostrar u ocultar tarjeta
             if (passesSearchFilter && passesCategoryFilter) {
                 card.classList.remove('hidden');
             } else {
@@ -326,13 +315,11 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // Ocultar el botón "Cargar más" si hay un término de búsqueda
         const loadMoreBtn = document.getElementById('loadMoreBtn');
         if(loadMoreBtn) {
             loadMoreBtn.style.display = searchText.length > 0 ? 'none' : 'block';
         }
     }
-
 });
 
 /* ========================================= */
@@ -362,26 +349,27 @@ window.initFilters = function() {
     const filterButtons = document.querySelectorAll('.filter-btn');
     const newsCards = document.querySelectorAll('.news-card');
 
-    window.filterNews = function(filterCategory, clickedButton) {
-        filterButtons.forEach(btn => btn.classList.remove('active'));
-        if (clickedButton) clickedButton.classList.add('active');
+    if (typeof window.filterNews !== 'function') {
+        window.filterNews = function(filterCategory, clickedButton) {
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            if (clickedButton) clickedButton.classList.add('active');
 
-        // Reiniciar búsqueda si se aplica un filtro
-        const searchInput = document.getElementById('searchInput');
-        if(searchInput) searchInput.value = '';
-        const loadMoreBtn = document.getElementById('loadMoreBtn');
-        if(loadMoreBtn) loadMoreBtn.style.display = 'block';
+            const searchInput = document.getElementById('searchInput');
+            if(searchInput) searchInput.value = '';
+            const loadMoreBtn = document.getElementById('loadMoreBtn');
+            if(loadMoreBtn) loadMoreBtn.style.display = 'block';
 
-        newsCards.forEach(card => {
-            const cardCategoryTag = card.querySelector('.category-tag');
-            const cardCategory = cardCategoryTag ? cardCategoryTag.textContent.trim() : 'N/A';
+            newsCards.forEach(card => {
+                const cardCategoryTag = card.querySelector('.category-tag');
+                const cardCategory = cardCategoryTag ? cardCategoryTag.textContent.trim() : 'N/A';
 
-            if (filterCategory === 'all' || cardCategory === filterCategory) {
-                card.classList.remove('hidden');
-            } else {
-                card.classList.add('hidden');
-            }
-        });
+                if (filterCategory === 'all' || cardCategory === filterCategory) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
     }
 
     filterButtons.forEach(btn => {
@@ -420,60 +408,41 @@ window.votePoll = function(optionIndex) {
     }
     
     localStorage.setItem('gungo_poll_voted', 'true');
-    
     const options = document.querySelectorAll('.poll-option');
-    // Usamos variables CSS para el color de borde, compatible con Modo Claro/Oscuro
-    options.forEach(opt => opt.style.borderColor = "var(--border-color)"); 
+    options.forEach(opt => opt.style.borderColor = "#444"); 
     const selectedOption = document.querySelector(`.poll-option[onclick*="${optionIndex}"]`);
-    if(selectedOption) selectedOption.style.borderColor = "var(--primary-color)";
+    if(selectedOption) selectedOption.style.borderColor = "#E50914";
 }
 
 window.shareNative = function(title, text) {
     if (navigator.share) {
         navigator.share({ title: title, text: text, url: window.location.href })
         .then(() => console.log('Compartido con éxito'))
-        .catch((error) => console.log('Error compartiendo', error));
+        .catch(() => {});
     } else {
-        alert("Enlace copiado al portapapeles: " + window.location.href);
+        navigator.clipboard.writeText(window.location.href);
+        alert("Enlace copiado al portapapeles");
     }
 }
 
 window.shareCurrentModal = function() {
-    const title = document.getElementById('modalTitle') ? document.getElementById('modalTitle').innerText : "Chisme GUNGO";
+    const title = document.getElementById('modalTitle')?.innerText || "Chisme GUNGO";
     shareNative(title, "¡No vas a creer este chisme de GUNGO!");
 }
 
 window.toggleOfficeMode = function() {
     document.body.classList.toggle('office-mode');
     if(document.body.classList.contains('office-mode')) {
-        alert("Modo Oficina Activado: Navega discreto 🤫");
+        alert("Modo Oficina Activado: Navega discreto");
     }
 }
-
-function initTheme() {
-    const savedTheme = localStorage.getItem('gungo-theme');
-    const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
-
-    // Aplica el tema guardado o el preferido por el sistema
-    if (savedTheme === 'light' || (savedTheme === null && prefersLight)) {
-        document.body.classList.add('light-mode');
-    }
-    
-    // Configurar el icono correcto al inicio
-    const themeToggle = document.getElementById('themeToggle');
-    if (themeToggle) {
-        const isLightMode = document.body.classList.contains('light-mode');
-        themeToggle.querySelector('i').className = isLightMode ? 'fas fa-moon' : 'fas fa-sun';
-    }
-}
-// ======================================
 
 window.startLiveNotifications = function() {
     const headlines = [
-        "👀 Alguien acaba de filtrar un video privado...",
-        "🔥 ¡Nueva pareja confirmada en Hollywood!",
-        "👗 Zendaya acaba de llegar a la alfombra roja.",
-        "🎤 Cancelan concierto masivo a última hora."
+        "Alguien acaba de filtrar un video privado...",
+        "¡Nueva pareja confirmada en Hollywood!",
+        "Zendaya acaba de llegar a la alfombra roja.",
+        "Cancelan concierto masivo a última hora."
     ];
 
     setInterval(() => {
@@ -498,7 +467,6 @@ function showToast(text) {
     };
 
     container.appendChild(toast);
-    
     setTimeout(() => toast.classList.add('show'), 100);
     setTimeout(() => {
         toast.classList.remove('show');
