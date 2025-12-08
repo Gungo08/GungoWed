@@ -75,11 +75,13 @@
   "loadMoreData": [
     { 
       "id": 4,
-      "category": "DINERO",
-      "title": "Divorcio millonario en camino", 
-      "summary": "Los detalles exclusivos que nadie más se atreve a contar sobre la división de bienes.",
-      "longDescription": "El acuerdo prenupcial está siendo cuestionado. El resumen aquí es que la fortuna está en riesgo, y el proceso será el más costoso en la historia de Hollywood. Este campo acepta todo el texto legal y personal para el chisme completo.",
-      "image": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2070&auto=format&fit=crop" 
+      "category": "CRYPTO",
+  "title": "¡Aprobación Masiva! Nuevos ETFs de Bitcoin Impulsan el Mercado",
+  "summary": "La SEC acelera aprobaciones de ETFs para altcoins y Bitcoin en diciembre 2025, atrayendo miles de millones en inversiones.",
+  "longDescription": "En un giro histórico, la Comisión de Valores y Bolsa (SEC) ha dado luz verde a una ola de ETFs de Bitcoin y altcoins como Solana y XRP, completando procesos en solo meses. Esto sigue la aprobación de estándares universales en septiembre, con inflows de más de $700 millones ya registrados. BlackRock lidera con su nuevo fondo de staking de Ethereum, mientras Vanguard abre sus puertas a cripto-ETFs por primera vez.",
+  "image": "https://images.unsplash.com/photo-1639762682140-3c21b5fb5c5e?q=80&w=2070&auto=format&fit=crop"
+
+
     },
     { 
       "id": 5,
@@ -100,3 +102,4 @@
   ]
 
 }
+
