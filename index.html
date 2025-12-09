@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -13,13 +13,13 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <!-- OneSignal Push Notifications - GRATIS y BRUTAL -->
-<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+    <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
 <script>
   window.OneSignal = window.OneSignal || [];
   OneSignal.push(function() {
     OneSignal.init({
-      appId: "TU_APP_ID_AQUI", // ← Te doy el mío de prueba o creas uno en 30 segundos
+      // ¡IMPORTANTE! Reemplaza este valor con tu ID de App de OneSignal real
+      appId: "TU_APP_ID_AQUI", 
       safari_web_id: "web.onesignal.auto",
       notifyButton: {
         enable: true,
@@ -113,6 +113,7 @@
         <div>
              <h2 style="font-size:3rem; font-weight:800; position:relative; color:transparent;">
               <span style="position:absolute; top:0; left:0; background:linear-gradient(45deg,#E50914,#FF6B00,#FFB800); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent;">
+                GUNGO
               </span>
             </h2>
             <p>Tu dosis diaria de farándula sin filtro.</p>
@@ -120,10 +121,10 @@
         <div>
             <h3>Síguenos</h3>
             <div class="social-icons">
-             <a href="#"><i class="https://www.instagram.com/gungo06/ "></i></a>
-             <a href="#"><i class="fab fa-tiktok"></i></a>
-             <a href="https://x.com/@gungun_enter"><i class="fab fa-twitter"></i></a>
-             <a href="#"><i class="fab fa-youtube"></i></a>
+             <a href="https://www.instagram.com/gungo06/" target="_blank"><i class="fab fa-instagram"></i></a>
+             <a href="#" target="_blank"><i class="fab fa-tiktok"></i></a>
+             <a href="https://x.com/@gungun_enter" target="_blank"><i class="fab fa-twitter"></i></a>
+             <a href="#" target="_blank"><i class="fab fa-youtube"></i></a>
             </div>
         </div>
         <div>
@@ -154,12 +155,10 @@
 </div>
 
 <div id="toast-container" class="toast-container"></div>
-<!-- BOTÓN FLOTANTE PARA ABRIR REEL VERTICAL -->
 <div id="reelTrigger" title="Abrir Reel Vertical (TikTok Mode)">
     Reel
 </div>
 
-<!-- CONTENEDOR DEL REEL VERTICAL (OCULTO POR DEFECTO) -->
 <div id="verticalReel">
     <div id="reelClose">×</div>
     <div id="reelContainer"></div>
