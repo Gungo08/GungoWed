@@ -1,0 +1,126 @@
+{
+  "tickerNews": [
+    " ¡ESCÁNDALO EN RD! Cierran discoteca famosa tras fiesta privada de Yailin.",
+    " Bad Bunny borra todas sus redes tras filtrarse su nuevo álbum.",
+    " Karol G y Feid anuncian 'Gira del Amor' por toda Latinoamérica.",
+    " Se filtra lista de invitados a la boda secreta de Maluma en Cartagena."
+  ],
+  "storiesData": [
+    {"name": "La Yailin", "img": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop"},
+    {"name": "Ferxxo", "img": "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&h=150&fit=crop"},
+    {"name": "Bad Bunny", "img": "https://images.unsplash.com/photo-1525362081669-2b476bb55256?w=150&h=150&fit=crop"},
+    {"name": "Shakira", "img": "https://images.unsplash.com/photo-1517365830460-955ce3ccd263?w=150&h=150&fit=crop"},
+    {"name": "Anuel", "img": "https://images.unsplash.com/photo-1605369272315-4f0179d6b2c2?w=150&h=150&fit=crop"},
+    {"name": "Tokischa", "img": "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=2070&auto=format&fit=crop"},
+    {"name": "Arcángel", "img": "https://images.unsplash.com/photo-1618077360395-f3068be8e001?w=150&h=150&fit=crop"}
+  ],
+  "pollData": {
+    "question": "¿Quién tiró la mejor 'puyadera' en la canción de ayer?",
+    "options": [
+      {"text": "Team Anuel (AA) ", "id": 0},
+      {"text": "Team Arcángel ", "id": 1}
+    ],
+    "footerText": "¡Votación cerrando en 2 horas! 50k votos registrados."
+  },
+  "newsArticles": [
+    {
+      "id": 1,
+      "category": "EXCLUSIVA",
+      "title": "¡Pillados! Shakira cena con famoso piloto en Barranquilla",
+      "summary": "Las fotos en el restaurante 'El Cielo' confirman lo que todos sospechaban.",
+      "longDescription": "Barranquilla se paralizó anoche. Shakira aterrizó en su jet privado y fue directamente a un restaurante exclusivo donde la esperaba nada menos que el piloto de F1 con el que se le vinculó el año pasado. Testigos aseguran que hubo besos y que Piqué ya reaccionó en Twitter con una indirecta muy directa.",
+      "image": "https://images.unsplash.com/photo-1551632811-561732d1e306?q=80&w=2070&auto=format&fit=crop"
+    },
+    {
+      "id": 2,
+      "category": "ESCÁNDALO",
+      "title": "Yailin 'La Más Viral' lanza micrófono a fan en concierto",
+      "summary": "El video es #1 en tendencias de TikTok. La dominicana dice que la insultaron.",
+      "longDescription": "Durante su presentación en el United Palace de Nueva York, Yailin perdió la paciencia. Un fanático en primera fila le lanzó agua, y la respuesta de la intérprete fue lanzarle el micrófono. La policía intervino y ahora enfrenta una demanda millonaria, aunque sus fans la defienden bajo el hashtag #FreeYailin.",
+      "image": "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=2070&auto=format&fit=crop"
+    },
+    {
+      "id": 3,
+      "category": "CALIENTES",
+      "title": "Maluma sube foto 'accidental' y rompe Instagram",
+      "summary": "El colombiano borró la imagen a los 5 minutos, pero las capturas vuelan en X.",
+      "longDescription": "Parece que a 'Papi Juancho' se le fue la mano. Esta mañana apareció una historia en su Instagram frente al espejo, recién salido de la ducha, donde la toalla dejaba ver más de la cuenta. Aunque alegó que fue un error, sus seguidores creen que es publicidad para su nueva línea de ropa interior. Las redes están ardiendo.",
+      "image": "https://images.unsplash.com/photo-1595078475328-1ab05d0a6a0e?q=80&w=2000&auto=format&fit=crop"
+    },
+    {
+      "id": 7,
+      "category": "MÚSICA",
+      "title": "Bad Bunny anuncia retiro (otra vez) tras polémica",
+      "summary": "El Conejo Malo dice que se va a vivir al campo en Puerto Rico.",
+      "longDescription": "Benito lo hizo de nuevo. Tras la filtración de su tema donde critica a la industria, publicó un video de 10 minutos diciendo que está 'cansado de la fama'. Fuentes cercanas dicen que compró una finca en Orocovis y planea desconectarse hasta el 2027. ¿Estrategia de marketing o realidad?",
+      "image": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=2070&auto=format&fit=crop"
+    },
+    {
+      "id": 8,
+      "category": "URBANO",
+      "title": "El Alfa compra el carro más caro de la historia de RD",
+      "summary": "El dembowsero presume su nueva adquisición de 5 millones de dólares.",
+      "longDescription": "El Alfa 'El Jefe' calló bocas hoy. Llegó a los Premios Soberano en un Bugatti bañado en oro, único en el mundo. Mientras algunos lo critican por la ostentación, él subió un video contando billetes y diciendo: 'El que no tenga esto, que no me hable'. La DGII ya le mandó un saludo en Twitter.",
+      "image": "https://images.unsplash.com/photo-1617788138017-80ad40651399?q=80&w=2070&auto=format&fit=crop"
+    },
+    {
+      "id": 9,
+      "category": "ROYAL",
+      "title": "Marc Anthony será papá por octava vez",
+      "summary": "Nadia Ferreira luce sospechosa 'pancita' en evento benéfico en Miami.",
+      "longDescription": "El flaco de oro no para. Durante la gala de su fundación anoche, Nadia Ferreira usó un vestido holgado y se le vio acariciando su vientre constantemente. Marc no dejaba de sonreír. De confirmarse, sería el segundo hijo de la pareja y el octavo del salsero. ¡Felicidades al clan Muñiz!",
+      "image": "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=2070&auto=format&fit=crop"
+    },
+    {
+      "id": 10,
+      "category": "ESCÁNDALO",
+      "title": "¡Detenido! Donaty aprehendido en fiesta patronal de Santo Domingo Norte",
+      "summary": "El urbano es viral en TikTok por mostrar arma en video filtrado durante las celebraciones.",
+      "longDescription": "La noche del 7 de diciembre explotó en redes: Donaty, el exponente dominicano de trap, fue arrestado por la Policía Nacional en una fiesta patronal en Los Guaricanos, Santo Domingo Norte. Videos virales muestran al artista sacando un arma durante una discusión, lo que desató el caos. Sus fans claman #LiberenADonaty mientras la PNC investiga posibles cargos por porte ilegal. ¿Otro golpe para el urbano RD?",
+      "image": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2070&auto=format&fit=crop"
+    },
+    {
+      "id": 11,
+      "category": "EXCLUSIVA",
+      "title": "La Perversa lanza 'Uki Uki Room' y calla haters post-reality",
+      "summary": "El dembow explosivo de la dominicana ya es #1 en Spotify RD, tras su paso por La Casa de Alofoke 2.",
+      "longDescription": "¡La reina del dembow regresa con todo! La Perversa, la estrella urbana de Santo Domingo, soltó su nuevo single 'Uki Uki Room' bajo ONErpm, cargado de sensualidad callejera que ya acumula millones de views en TikTok. Después de su polémico paso por el reality La Casa de Alofoke 2, donde fue una de las más carismáticas, la artista cambia el drama por beats que hacen perrear. ¿Será su comeback del año en la farándula quisqueyana?",
+      "image": "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=2070&auto=format&fit=crop"
+    },
+    {
+      "id": 12,
+      "category": "CALIENTES",
+      "title": "Tokischa rompe estereotipos con Ivy Queen en Billboard Latin Week 2025",
+      "summary": "La dominicana y la 'Dama del Urban' encienden Miami con panel viral sobre empoderamiento urbano.",
+      "longDescription": "¡Poder femenino en el reggaetón! Tokischa, la provocadora de Santo Domingo, compartió escenario con Ivy Queen en el panel 'Breaking Stereotypes' de Billboard Latin Music Week 2025 en Miami. Hablaron de censura, religión y colaboraciones explosivas (¡incluyendo a Madonna y Rosalía!). El clip de su charla ya es tendencia en X e Instagram, inspirando a miles de mujeres en el movimiento urbano dominicano. ¿Próxima collab confirmada?",
+      "image": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=2070&auto=format&fit=crop"
+    }
+  ],
+  "loadMoreData": [
+    { 
+      "id": 4,
+      "category": "DINERO",
+      "title": "La fortuna de Karol G supera a la de Shakira este año", 
+      "summary": "Forbes revela los números del 'Mañana Será Bonito Tour'.",
+      "longDescription": "La Bichota es oficialmente la reina del cash. Según el último reporte financiero, su gira rompió todos los récords de estadios en Europa y Latinoamérica, superando en ingresos netos a su compatriota Shakira este 2025. Se rumorea que comprará un equipo de fútbol en Medellín.",
+      "image": "https://images.unsplash.com/photo-1563841930606-67e2bce48b78?q=80&w=2072&auto=format&fit=crop" 
+    },
+    { 
+      "id": 5,
+      "category": "MODA",
+      "title": "Tokischa en la portada de Vogue Francia", 
+      "summary": "La dominicana lleva el estilo 'popola' a la alta costura parisina.",
+      "longDescription": "Tokischa ha logrado lo imposible. Es la cara de septiembre de Vogue Francia, vestida totalmente de diseñadores dominicanos emergentes. La entrevista es explosiva: habla de religión, censura y confirma colaboración con Madonna y Rosalía para este invierno.",
+      "image": "https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?q=80&w=2070&auto=format&fit=crop" 
+    },
+    { 
+      "id": 6,
+      "category": "LEGAL",
+      "title": "Tekashi 6ix9ine detenido en el aeropuerto de San Juan", 
+      "summary": "Intentó entrar a PR con documentos falsos y armas no registradas.",
+      "longDescription": "El rapero no sale de una para entrar en otra. Autoridades federales lo detuvieron al bajar de su jet privado en Puerto Rico. Al parecer, venía a 'buscar problemas' con un reguetonero local. Se le negó la fianza y Yailin ya está pidiendo cadena de oración en sus historias.",
+      "image": "https://images.unsplash.com/photo-1589578527966-8171226dd716?q=80&w=2070&auto=format&fit=crop" 
+    }
+  ]
+}
+
