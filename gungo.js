@@ -1,10 +1,3 @@
-/* ======================================================= */
-/* gungo.js - VERSIÓN FINAL DEFINITIVA 2025               */
-/* TODAS LAS FUNCIONALIDADES MODERNAS ACTIVADAS          */
-/* - Reacciones flotantes + Voz + Reel + Push Web         */
-/* 100% FUNCIONAL - DICIEMBRE 2025                        */
-/* ======================================================= */
-
 document.addEventListener("DOMContentLoaded", () => {
     const header = document.querySelector('header');
     const hero = document.querySelector('.hero');
@@ -512,3 +505,4 @@ function showToast(t) {
 
     console.log("GUNGO 2025 FULLY LOADED - Reel + Reacciones + Voz + Push Web");
 })();
+
