@@ -1,4 +1,9 @@
+/* ======================================================= */
 /* gungo.js - VERSIÓN FINAL DEFINITIVA 2025               */
+/* TODAS LAS FUNCIONALIDADES MODERNAS ACTIVADAS          */
+/* - Reacciones flotantes + Voz + Reel + Push Web         */
+/* 100% FUNCIONAL - DICIEMBRE 2025                        */
+/* ======================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
     const header = document.querySelector('header');
@@ -33,12 +38,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const btn1 = document.createElement('button');
         btn1.className = 'reaction-btn';
         btn1.onclick = e => toggleReact(btn1, e);
-        btn1.innerHTML = `🔥 <span>${Math.floor(Math.random() * 500 + 50)}</span>`; // Añadido Emoji para claridad
+        btn1.innerHTML = ` <span>${Math.floor(Math.random() * 500 + 50)}</span>`;
 
         const btn2 = document.createElement('button');
         btn2.className = 'reaction-btn';
         btn2.onclick = e => toggleReact(btn2, e);
-        btn2.innerHTML = `😂 <span>${Math.floor(Math.random() * 200 + 10)}</span>`; // Añadido Emoji para claridad
+        btn2.innerHTML = ` <span>${Math.floor(Math.random() * 200 + 10)}</span>`;
 
         const shareBtn = document.createElement('button');
         shareBtn.className = 'share-btn-card';
@@ -54,11 +59,9 @@ document.addEventListener("DOMContentLoaded", () => {
         contentDiv.appendChild(reactions);
     }
 
-    // INICIO DE LA CARGA DE DATOS (EL CORAZÓN DEL CÓDIGO)
     fetch('data.json')
         .then(r => r.ok ? r.json() : Promise.reject("Error cargando data.json"))
         .then(data => {
-            // Se garantiza que los datos están cargados antes de ejecutar cualquier lógica
             allNewsData = [...data.newsArticles, ...(data.loadMoreData || [])];
 
             initObserverInstance();
@@ -70,22 +73,12 @@ document.addEventListener("DOMContentLoaded", () => {
             initFilters();
             setupModalListener();
             startLiveNotifications();
-            // Esto asegura que las reacciones flotantes se añadan una vez los artículos están en el DOM
-            setTimeout(() => document.querySelectorAll('.news-card').forEach(addReactions), 100); 
 
             searchInput?.addEventListener('input', e => debouncedSearch(e.target.value));
-
-            // Si es móvil, intentar abrir el reel automáticamente después de cargar
-             if (window.innerWidth <= 768 || 'ontouchstart' in window) {
-                setTimeout(() => {
-                    if (allNewsData.length > 0) openReel();
-                }, 2000);
-            }
-
         })
         .catch(err => {
-            console.error("Error cargando data.json. Asegúrate de que el archivo exista y esté bien formado:", err);
-            newsGrid.innerHTML = `<div style="grid-column:1/-1;color:#E50914;padding:40px;background:#1a0000;text-align:center;border:2px dashed #E50914;border-radius:20px;"><h3>¡Error al cargar las Noticias!</h3><p>Verifica que el archivo <b>data.json</b> exista y sea accesible.</p></div>`;
+            console.error("Error:", err);
+            newsGrid.innerHTML = `<div style="grid-column:1/-1;color:#E50914;padding:40px;background:#1a0000;text-align:center;border:2px dashed #E50914;border-radius:20px;"><h3>¡Error!</h3><p>No se pudo cargar data.json</p></div>`;
         });
 
     function initObserverInstance() {
@@ -131,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
             container.innerHTML += `
                 <div>
                     <div class="story-circle">
-                        <img src="${s.img}" alt="${s.name}" loading="lazy" onerror="this.src='https://placehold.co/150x150/000000/FFFFFF/png?text=GUNGO'">
+                        <img src="${s.img}" alt="${s.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/150/000/FFF?text=FAIL'">
                     </div>
                     <p class="story-name">${s.name}</p>
                 </div>
@@ -177,8 +170,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 this.innerHTML = '¡Estás al día!';
                 this.disabled = true;
                 this.style.opacity = '0.5';
-                 // Re-aplicar reacciones a los nuevos elementos
-                document.querySelectorAll('.news-card').forEach(addReactions); 
             }, 800);
         });
     }
@@ -240,187 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.getElementById('loadMoreBtn')?.style.display = term ? 'none' : 'block';
     }
-
-    // Funcionalidad de Reacciones Flotantes
-    const emojis = ['🔥', '💯', '😲', '🥺', '👏', '🎉', '🇩🇴'];
-    let timer;
-
-    function floatEmoji(e, card) {
-        const rect = card.getBoundingClientRect();
-        const x = (e.clientX || e.touches[0].clientX) - rect.left;
-        const y = (e.clientY || e.touches[0].clientY) - rect.top;
-
-        const el = document.createElement('div');
-        el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-        el.style.cssText = `position:absolute;left:${x}px;top:${y}px;font-size:${30 + Math.random() * 20}px;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);animation:floatUp 1.6s forwards;`;
-        card.style.position = 'relative';
-        card.appendChild(el);
-        setTimeout(() => el.remove(), 1700);
-    }
-
-    function addReactions(card) {
-        if (card.dataset.reactions) return;
-        card.dataset.reactions = 'true';
-
-        ['touchstart', 'mousedown'].forEach(ev => {
-            card.addEventListener(ev, e => {
-                e.preventDefault();
-                // Usamos un timeout más corto para móvil para que se sienta más rápido
-                const delay = (ev === 'touchstart' && window.innerWidth <= 768) ? 300 : 400; 
-                timer = setTimeout(() => {
-                    floatEmoji(e, card);
-                    navigator.vibrate?.([50]);
-                }, delay);
-            });
-        });
-        ['touchend', 'touchmove', 'mouseup', 'mouseleave'].forEach(ev => card.addEventListener(ev, () => clearTimeout(timer)));
-    }
-    
-    // Configuración del estilo de animación de las reacciones flotantes
-    if (!document.getElementById('floatUpStyle')) {
-        const style = document.createElement('style');
-        style.id = 'floatUpStyle';
-        style.textContent = `@keyframes floatUp{0%{transform:translate(-50%,-50%) scale(0);opacity:1}70%{transform:translate(-50%,-180px) scale(1.3)}100%{transform:translate(-50%,-350px) scale(0.8);opacity:0}}`;
-        document.head.appendChild(style);
-    }
-
-    // Funcionalidad de Voz en Off
-    let speaking = false;
-    function addVoiceBtn() {
-        const textDiv = document.querySelector('#newsModal .modal-text');
-        if (!textDiv || document.getElementById('voiceBtn')) return;
-
-        const btn = document.createElement('button');
-        btn.id = 'voiceBtn';
-        btn.innerHTML = `<i class="fas fa-volume-up"></i> Lectura en voz alta`;
-        btn.style.cssText = `position:absolute;top:15px;left:20px;z-index:11;background:#E50914;color:#fff;border:none;padding:10px 16px;border-radius:50px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;box-shadow:0 4px 15px rgba(229,9,20,0.5);`;
-        textDiv.style.position = 'relative';
-        textDiv.appendChild(btn);
-
-        btn.onclick = () => {
-            if (speaking) {
-                speechSynthesis.cancel();
-                speaking = false;
-                btn.innerHTML = `<i class="fas fa-volume-up"></i> Lectura en voz alta`;
-                btn.style.background = '#E50914';
-            } else {
-                const title = document.getElementById('modalTitle')?.innerText || '';
-                const desc = document.getElementById('modalDesc')?.innerText || '';
-                const text = `${title}. ${desc}`.trim();
-                if (!text) return;
-
-                const utter = new SpeechSynthesisUtterance(text);
-                const voices = speechSynthesis.getVoices();
-                const voz = voices.find(v => v.lang.includes('es') && (v.lang === 'es-DO' || v.name.includes('Spanish'))) || voices.find(v => v.lang.includes('es'));
-                if (voz) utter.voice = voz;
-                utter.lang = 'es-DO';
-                utter.rate = 0.95;
-                utter.pitch = 1.1;
-
-                utter.onstart = () => {
-                    speaking = true;
-                    btn.innerHTML = `<i class="fas fa-stop-circle"></i> Hablando...`;
-                    btn.style.background = '#FF6B00';
-                };
-                utter.onend = () => {
-                    speaking = false;
-                    btn.innerHTML = `<i class="fas fa-volume-up"></i> Lectura en voz alta`;
-                    btn.style.background = '#E50914';
-                };
-
-                speechSynthesis.speak(utter);
-            }
-        };
-    }
-
-    new MutationObserver(() => {
-        if (document.querySelector('#newsModal.open')) setTimeout(addVoiceBtn, 400);
-    }).observe(document.getElementById('newsModal'), { attributes: true, attributeFilter: ['class'] });
-
-
-    // Funcionalidad de Reel Vertical
-    const trigger = document.getElementById('reelTrigger');
-    const reel = document.getElementById('verticalReel');
-    const container = document.getElementById('reelContainer');
-
-    function createReelItem(article) {
-        const div = document.createElement('div');
-        div.className = 'reel-item';
-        div.innerHTML = `
-            <img src="${article.image}" alt="${article.title}" loading="lazy">
-            <div class="reel-info">
-                <h3>${article.title}</h3>
-                <p>${article.summary}</p>
-            </div>
-        `;
-        return div;
-    }
-
-    window.openReel = function() {
-        if (allNewsData.length === 0) return;
-        container.innerHTML = '';
-        allNewsData.forEach(article => container.appendChild(createReelItem(article)));
-        reel.classList.add('active');
-        document.body.style.overflow = 'hidden';
-        setTimeout(() => container.scrollTop = 0, 100);
-    }
-
-    function closeReel() {
-        reel.classList.remove('active');
-        document.body.style.overflow = 'auto';
-        window.speechSynthesis?.cancel(); // Cancelar voz si está activa en el modal de reel
-    }
-
-    document.getElementById('reelClose')?.addEventListener('click', closeReel);
-    trigger?.addEventListener('click', openReel);
-
-    document.getElementById('reelLike')?.addEventListener('click', () => {
-        const heart = document.createElement('div');
-        heart.textContent = '❤️'; // Usar un emoji en lugar de texto
-        heart.style.cssText = 'position:fixed;right:40px;bottom:180px;font-size:80px;pointer-events:none;z-index:9999;animation:floatUpHeart 1.2s forwards;';
-        document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 1300);
-    });
-    
-    // Asegurar que la animación del corazón exista
-    if (!document.getElementById('reelHeartStyle')) {
-        const style = document.createElement('style');
-        style.id = 'reelHeartStyle';
-        style.textContent = `@keyframes floatUpHeart{0%{transform:translateY(0) scale(0)}100%{transform:translateY(-300px) scale(1);opacity:0}}`;
-        document.head.appendChild(style);
-    }
-
-    document.getElementById('reelShare')?.addEventListener('click', () => {
-        shareNative("Chisme brutal en GUNGO", "Mira este reel vertical");
-    });
-
-    document.getElementById('reelVoice')?.addEventListener('click', function() {
-        const index = Math.round(container.scrollTop / window.innerHeight);
-        const title = container.children[index]?.querySelector('h3')?.innerText || '';
-        const desc = container.children[index]?.querySelector('p')?.innerText || '';
-        const text = title + ". " + desc;
-        if (text.length > 10) {
-            speechSynthesis.cancel();
-            const utter = new SpeechSynthesisUtterance(text);
-            utter.lang = 'es-DO';
-            utter.rate = 0.95;
-            utter.pitch = 1.1;
-            speechSynthesis.speak(utter);
-        }
-    });
-
-    // Lógica para el scroll infinito del reel
-    container?.addEventListener('scroll', () => {
-        const index = Math.round(container.scrollTop / window.innerHeight);
-        // Si estamos al final, regresa al inicio para simular infinito
-        if (index >= allNewsData.length - 1) {
-             container.scrollTop = 0;
-        }
-    });
-
-    console.log("GUNGO 2025 FULLY LOADED - Reel + Reacciones + Voz + Push Web");
 });
-
 
 /* ========================================= */
 /* FUNCIONES GLOBALES                        */
@@ -478,7 +289,7 @@ window.shareNative = (t, x) => {
         navigator.share({title: t, text: x, url: location.href}).catch(() => {});
     } else {
         navigator.clipboard.writeText(location.href);
-        showToast("Enlace copiado al portapapeles", true); // Usar toast
+        alert("Enlace copiado al portapapeles");
     }
 };
 
@@ -489,24 +300,216 @@ window.shareCurrentModal = () => {
 
 window.toggleOfficeMode = () => {
     document.body.classList.toggle('office-mode');
-    showToast(document.body.classList.contains('office-mode') ? "Modo Oficina activado" : "Modo normal activado", true);
+    if (document.body.classList.contains('office-mode')) alert("Modo Oficina activado");
 };
 
 window.startLiveNotifications = () => {
     const msgs = ["Filtraron video privado", "Nueva pareja confirmada", "Cancelan concierto", "Tokischa rompe Instagram"];
-    // Dispara notificaciones más seguido para demostración (cada 8 segundos)
-    setInterval(() => Math.random() > 0.6 && showToast(msgs[Math.floor(Math.random() * msgs.length)]), 8000); 
+    setInterval(() => Math.random() > 0.8 && showToast(msgs[Math.floor(Math.random() * msgs.length)]), 15000);
 };
 
-function showToast(t, isInfo = false) {
+function showToast(t) {
     const c = document.getElementById('toast-container');
     if (!c) return;
     const el = document.createElement('div');
-    el.className = `toast-msg ${isInfo ? 'info' : ''}`;
-    el.innerHTML = `<div class="toast-header">${isInfo ? 'INFO' : 'AHORA'}</div><div class="toast-body">${t}</div>`;
+    el.className = 'toast-msg';
+    el.innerHTML = `<div class="toast-header">AHORA</div><div class="toast-body">${t}</div>`;
     el.onclick = () => document.querySelector('.news-card')?.click();
     c.appendChild(el);
     setTimeout(() => el.classList.add('show'), 100);
     setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 600); }, 6000);
 }
+
+/* ======================================================= */
+/* REEL VERTICAL INFINITO + REACCIONES + VOZ EN OFF       */
+/* ABRE AUTOMÁTICO EN MÓVIL                               */
+/* ======================================================= */
+
+(() => {
+    if (window.gungo2025) return;
+    window.gungo2025 = true;
+
+    // REACCIONES FLOTANTES
+    const emojis = ['FIRE', '100', 'SHOCKED FACE', 'PLEADING FACE', 'CLAPPING HANDS', 'PARTY POPPER', 'DOMINICAN REPUBLIC FLAG'];
+    let timer;
+
+    function floatEmoji(e, card) {
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX || e.touches[0].clientX) - rect.left;
+        const y = (e.clientY || e.touches[0].clientY) - rect.top;
+
+        const el = document.createElement('div');
+        el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        el.style.cssText = `position:absolute;left:${x}px;top:${y}px;font-size:${30 + Math.random() * 20}px;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);animation:floatUp 1.6s forwards;`;
+        card.style.position = 'relative';
+        card.appendChild(el);
+        setTimeout(() => el.remove(), 1700);
+    }
+
+    const style = document.createElement('style');
+    style.textContent = `@keyframes floatUp{0%{transform:translate(-50%,-50%) scale(0);opacity:1}70%{transform:translate(-50%,-180px) scale(1.3)}100%{transform:translate(-50%,-350px) scale(0.8);opacity:0}}`;
+    document.head.appendChild(style);
+
+    function addReactions(card) {
+        if (card.dataset.reactions) return;
+        card.dataset.reactions = 'true';
+
+        ['touchstart', 'mousedown'].forEach(ev => {
+            card.addEventListener(ev, e => {
+                e.preventDefault();
+                timer = setTimeout(() => {
+                    floatEmoji(e, card);
+                    navigator.vibrate?.([50]);
+                }, 400);
+            });
+        });
+        ['touchend', 'touchmove', 'mouseup', 'mouseleave'].forEach(ev => card.addEventListener(ev, () => clearTimeout(timer)));
+    }
+
+    document.querySelectorAll('.news-card').forEach(addReactions);
+    const oldRender = window.renderNews;
+    window.renderNews = (a, b) => { oldRender?.(a, b); setTimeout(() => document.querySelectorAll('.news-card').forEach(addReactions), 100); };
+
+    // VOZ EN OFF EN MODAL
+    let speaking = false;
+    function addVoiceBtn() {
+        const textDiv = document.querySelector('#newsModal .modal-text');
+        if (!textDiv || document.getElementById('voiceBtn')) return;
+
+        const btn = document.createElement('button');
+        btn.id = 'voiceBtn';
+        btn.innerHTML = `Lectura en voz alta`;
+        btn.style.cssText = `position:absolute;top:15px;left:20px;z-index:11;background:#E50914;color:#fff;border:none;padding:10px 16px;border-radius:50px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;box-shadow:0 4px 15px rgba(229,9,20,0.5);`;
+        textDiv.style.position = 'relative';
+        textDiv.appendChild(btn);
+
+        btn.onclick = () => {
+            if (speaking) {
+                speechSynthesis.cancel();
+                speaking = false;
+                btn.innerHTML = `Lectura en voz alta`;
+                btn.style.background = '#E50914';
+            } else {
+                const title = document.getElementById('modalTitle')?.innerText || '';
+                const desc = document.getElementById('modalDesc')?.innerText || '';
+                const text = `${title}. ${desc}`.trim();
+                if (!text) return;
+
+                const utter = new SpeechSynthesisUtterance(text);
+                const voices = speechSynthesis.getVoices();
+                const voz = voices.find(v => v.lang.includes('es') && (v.lang === 'es-DO' || v.name.includes('Spanish'))) || voices.find(v => v.lang.includes('es'));
+                if (voz) utter.voice = voz;
+                utter.lang = 'es-DO';
+                utter.rate = 0.95;
+                utter.pitch = 1.1;
+
+                utter.onstart = () => {
+                    speaking = true;
+                    btn.innerHTML = `Hablando`;
+                    btn.style.background = '#FF6B00';
+                };
+                utter.onend = () => {
+                    speaking = false;
+                    btn.innerHTML = `Lectura en voz alta`;
+                    btn.style.background = '#E50914';
+                };
+
+                speechSynthesis.speak(utter);
+            }
+        };
+    }
+
+    new MutationObserver(() => {
+        if (document.querySelector('#newsModal.open')) setTimeout(addVoiceBtn, 400);
+    }).observe(document.getElementById('newsModal'), { attributes: true, attributeFilter: ['class'] });
+
+    // REEL VERTICAL INFINITO (ABRE AUTOMÁTICO EN MÓVIL)
+    const trigger = document.getElementById('reelTrigger');
+    const reel = document.getElementById('verticalReel');
+    const container = document.getElementById('reelContainer');
+    const closeBtn = document.getElementById('reelClose');
+
+    let isScrolling = false;
+
+    function createReelItem(article) {
+        const div = document.createElement('div');
+        div.className = 'reel-item';
+        div.innerHTML = `
+            <img src="${article.image}" alt="${article.title}" loading="lazy">
+            <div class="reel-info">
+                <h3>${article.title}</h3>
+                <p>${article.summary}</p>
+            </div>
+        `;
+        return div;
+    }
+
+    window.openReel = function() {
+        if (allNewsData.length === 0) return;
+        container.innerHTML = '';
+        allNewsData.forEach(article => container.appendChild(createReelItem(article)));
+        reel.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => container.scrollTop = 0, 100);
+    }
+
+    function closeReel() {
+        reel.classList.remove('active');
+        document.body.style.overflow = 'auto';
+        speechSynthesis.cancel();
+    }
+
+    closeBtn?.addEventListener('click', closeReel);
+
+    // ABRIR AUTOMÁTICO EN MÓVIL
+    if (window.innerWidth <= 768 || 'ontouchstart' in window) {
+        setTimeout(() => {
+            if (allNewsData.length > 0) openReel();
+        }, 2000);
+    }
+
+    trigger?.addEventListener('click', openReel);
+
+    document.getElementById('reelLike')?.addEventListener('click', () => {
+        const heart = document.createElement('div');
+        heart.textContent = 'Red Heart';
+        heart.style.cssText = 'position:fixed;right:40px;bottom:180px;font-size:80px;pointer-events:none;z-index:9999;animation:floatUp 1.2s forwards;';
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 1300);
+    });
+
+    document.getElementById('reelShare')?.addEventListener('click', () => {
+        shareNative("Chisme brutal en GUNGO", "Mira este reel vertical");
+    });
+
+    document.getElementById('reelVoice')?.addEventListener('click', function() {
+        const index = Math.round(container.scrollTop / window.innerHeight);
+        const title = container.children[index]?.querySelector('h3')?.innerText || '';
+        const desc = container.children[index]?.querySelector('p')?.innerText || '';
+        const text = title + ". " + desc;
+        if (text.length > 10) {
+            speechSynthesis.cancel();
+            speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+        }
+    });
+
+    container?.addEventListener('scroll', () => {
+        if (isScrolling) return;
+        isScrolling = true;
+        setTimeout(() => {
+            const index = Math.round(container.scrollTop / window.innerHeight);
+            if (index >= allNewsData.length - 1) container.scrollTop = 0;
+            isScrolling = false;
+        }, 200);
+    });
+
+    if (!document.getElementById('reelHeartStyle')) {
+        const style = document.createElement('style');
+        style.id = 'reelHeartStyle';
+        style.textContent = `@keyframes floatUp{0%{transform:translateY(0) scale(0)}100%{transform:translateY(-300px) scale(1);opacity:0}}`;
+        document.head.appendChild(style);
+    }
+
+    console.log("GUNGO 2025 FULLY LOADED - Reel + Reacciones + Voz + Push Web");
+})();
 
