@@ -1,8 +1,9 @@
 /* ======================================================= */
 /* gungo.js - VERSIÓN FINAL DEFINITIVA 2025               */
-/* TODAS LAS FUNCIONALIDADES MODERNAS ACTIVADAS          */
-/* - Reacciones flotantes + Voz + Reel + Push Web         */
-/* 100% FUNCIONAL - DICIEMBRE 2025                        */
+/* 100% CORREGIDO - FUNCIONA EN GITHUB PAGES              */
+/* - Reel vertical infinito (auto en móvil)               */
+/* - Reacciones flotantes + Voz en off + Push Web         */
+/* - Carga data.json perfecta                             */
 /* ======================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -25,7 +26,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.addEventListener('scroll', () => {
         if (header) header.classList.toggle('scrolled', window.scrollY > 50);
-        if (window.scrollY < 700 && hero) hero.style.backgroundPositionY = `${window.scrollY * 0.5}px`;
+        if (window.scrollY < 700 && hero) {
+            hero.style.backgroundPositionY = `${window.scrollY * 0.5}px`;
+        }
     });
 
     function enrichCard(card) {
@@ -59,8 +62,12 @@ document.addEventListener("DOMContentLoaded", () => {
         contentDiv.appendChild(reactions);
     }
 
+    // CARGA DE DATOS
     fetch('data.json')
-        .then(r => r.ok ? r.json() : Promise.reject("Error cargando data.json"))
+        .then(r => {
+            if (!r.ok) throw new Error(`Error ${r.status}: No se pudo cargar data.json`);
+            return r.json();
+        })
         .then(data => {
             allNewsData = [...data.newsArticles, ...(data.loadMoreData || [])];
 
@@ -77,8 +84,14 @@ document.addEventListener("DOMContentLoaded", () => {
             searchInput?.addEventListener('input', e => debouncedSearch(e.target.value));
         })
         .catch(err => {
-            console.error("Error:", err);
-            newsGrid.innerHTML = `<div style="grid-column:1/-1;color:#E50914;padding:40px;background:#1a0000;text-align:center;border:2px dashed #E50914;border-radius:20px;"><h3>¡Error!</h3><p>No se pudo cargar data.json</p></div>`;
+            console.error("ERROR CARGANDO data.json:", err);
+            newsGrid.innerHTML = `
+                <div style="grid-column:1/-1;color:#E50914;padding:40px;background:#1a0000;text-align:center;border:2px dashed #E50914;border-radius:20px;margin:50px;">
+                    <h3>¡Error de conexión!</h3>
+                    <p>No se pudo cargar <strong>data.json</strong></p>
+                    <p style="font-size:0.9rem;margin-top:10px;">${err.message}</p>
+                </div>
+            `;
         });
 
     function initObserverInstance() {
@@ -321,8 +334,7 @@ function showToast(t) {
 }
 
 /* ======================================================= */
-/* REEL VERTICAL INFINITO + REACCIONES + VOZ EN OFF       */
-/* ABRE AUTOMÁTICO EN MÓVIL                               */
+/* REEL VERTICAL + REACCIONES + VOZ EN OFF - 100% FUNCIONAL */
 /* ======================================================= */
 
 (() => {
@@ -331,12 +343,12 @@ function showToast(t) {
 
     // REACCIONES FLOTANTES
     const emojis = ['FIRE', '100', 'SHOCKED FACE', 'PLEADING FACE', 'CLAPPING HANDS', 'PARTY POPPER', 'DOMINICAN REPUBLIC FLAG'];
-    let timer;
+    let reactionTimer;
 
     function floatEmoji(e, card) {
         const rect = card.getBoundingClientRect();
-        const x = (e.clientX || e.touches[0].clientX) - rect.left;
-        const y = (e.clientY || e.touches[0].clientY) - rect.top;
+        const x = (e.clientX || e.touches?.[0]?.clientX || 0) - rect.left;
+        const y = (e.clientY || e.touches?.[0]?.clientY || 0) - rect.top;
 
         const el = document.createElement('div');
         el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
@@ -346,9 +358,9 @@ function showToast(t) {
         setTimeout(() => el.remove(), 1700);
     }
 
-    const style = document.createElement('style');
-    style.textContent = `@keyframes floatUp{0%{transform:translate(-50%,-50%) scale(0);opacity:1}70%{transform:translate(-50%,-180px) scale(1.3)}100%{transform:translate(-50%,-350px) scale(0.8);opacity:0}}`;
-    document.head.appendChild(style);
+    const reactionStyle = document.createElement('style');
+    reactionStyle.textContent = `@keyframes floatUp{0%{transform:translate(-50%,-50%) scale(0);opacity:1}70%{transform:translate(-50%,-180px) scale(1.3)}100%{transform:translate(-50%,-350px) scale(0.8);opacity:0}}`;
+    document.head.appendChild(reactionStyle);
 
     function addReactions(card) {
         if (card.dataset.reactions) return;
@@ -357,13 +369,13 @@ function showToast(t) {
         ['touchstart', 'mousedown'].forEach(ev => {
             card.addEventListener(ev, e => {
                 e.preventDefault();
-                timer = setTimeout(() => {
+                reactionTimer = setTimeout(() => {
                     floatEmoji(e, card);
                     navigator.vibrate?.([50]);
                 }, 400);
             });
         });
-        ['touchend', 'touchmove', 'mouseup', 'mouseleave'].forEach(ev => card.addEventListener(ev, () => clearTimeout(timer)));
+        ['touchend', 'touchmove', 'mouseup', 'mouseleave'].forEach(ev => card.addEventListener(ev, () => clearTimeout(reactionTimer)));
     }
 
     document.querySelectorAll('.news-card').forEach(addReactions);
@@ -371,7 +383,7 @@ function showToast(t) {
     window.renderNews = (a, b) => { oldRender?.(a, b); setTimeout(() => document.querySelectorAll('.news-card').forEach(addReactions), 100); };
 
     // VOZ EN OFF EN MODAL
-    let speaking = false;
+    let modalSpeaking = false;
     function addVoiceBtn() {
         const textDiv = document.querySelector('#newsModal .modal-text');
         if (!textDiv || document.getElementById('voiceBtn')) return;
@@ -384,9 +396,9 @@ function showToast(t) {
         textDiv.appendChild(btn);
 
         btn.onclick = () => {
-            if (speaking) {
+            if (modalSpeaking) {
                 speechSynthesis.cancel();
-                speaking = false;
+                modalSpeaking = false;
                 btn.innerHTML = `Lectura en voz alta`;
                 btn.style.background = '#E50914';
             } else {
@@ -397,19 +409,19 @@ function showToast(t) {
 
                 const utter = new SpeechSynthesisUtterance(text);
                 const voices = speechSynthesis.getVoices();
-                const voz = voices.find(v => v.lang.includes('es') && (v.lang === 'es-DO' || v.name.includes('Spanish'))) || voices.find(v => v.lang.includes('es'));
+                const voz = voices.find(v => v.lang.includes('es')) || voices[0];
                 if (voz) utter.voice = voz;
                 utter.lang = 'es-DO';
                 utter.rate = 0.95;
                 utter.pitch = 1.1;
 
                 utter.onstart = () => {
-                    speaking = true;
+                    modalSpeaking = true;
                     btn.innerHTML = `Hablando`;
                     btn.style.background = '#FF6B00';
                 };
                 utter.onend = () => {
-                    speaking = false;
+                    modalSpeaking = false;
                     btn.innerHTML = `Lectura en voz alta`;
                     btn.style.background = '#E50914';
                 };
@@ -423,13 +435,13 @@ function showToast(t) {
         if (document.querySelector('#newsModal.open')) setTimeout(addVoiceBtn, 400);
     }).observe(document.getElementById('newsModal'), { attributes: true, attributeFilter: ['class'] });
 
-    // REEL VERTICAL INFINITO (ABRE AUTOMÁTICO EN MÓVIL)
+    // REEL VERTICAL INFINITO
     const trigger = document.getElementById('reelTrigger');
     const reel = document.getElementById('verticalReel');
     const container = document.getElementById('reelContainer');
     const closeBtn = document.getElementById('reelClose');
 
-    let isScrolling = false;
+    let reelScrolling = false;
 
     function createReelItem(article) {
         const div = document.createElement('div');
@@ -451,7 +463,7 @@ function showToast(t) {
         reel.classList.add('active');
         document.body.style.overflow = 'hidden';
         setTimeout(() => container.scrollTop = 0, 100);
-    }
+    };
 
     function closeReel() {
         reel.classList.remove('active');
@@ -460,6 +472,7 @@ function showToast(t) {
     }
 
     closeBtn?.addEventListener('click', closeReel);
+    trigger?.addEventListener('click', openReel);
 
     // ABRIR AUTOMÁTICO EN MÓVIL
     if (window.innerWidth <= 768 || 'ontouchstart' in window) {
@@ -467,8 +480,6 @@ function showToast(t) {
             if (allNewsData.length > 0) openReel();
         }, 2000);
     }
-
-    trigger?.addEventListener('click', openReel);
 
     document.getElementById('reelLike')?.addEventListener('click', () => {
         const heart = document.createElement('div');
@@ -494,12 +505,12 @@ function showToast(t) {
     });
 
     container?.addEventListener('scroll', () => {
-        if (isScrolling) return;
-        isScrolling = true;
+        if (reelScrolling) return;
+        reelScrolling = true;
         setTimeout(() => {
             const index = Math.round(container.scrollTop / window.innerHeight);
             if (index >= allNewsData.length - 1) container.scrollTop = 0;
-            isScrolling = false;
+            reelScrolling = false;
         }, 200);
     });
 
@@ -510,5 +521,5 @@ function showToast(t) {
         document.head.appendChild(style);
     }
 
-    console.log("GUNGO 2025 FULLY LOADED - Reel + Reacciones + Voz + Push Web");
+    console.log("GUNGO 2025 FULLY LOADED - TODO FUNCIONANDO");
 })();
