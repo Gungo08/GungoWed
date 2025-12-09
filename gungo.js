@@ -1,9 +1,3 @@
-/* ======================================================= */
-/* gungo.js - VERSIÓN FINAL DEFINITIVA 2025               */
-/* TODAS LAS FUNCIONALIDADES MODERNAS ACTIVADAS          */
-/* - Reacciones flotantes + Voz + Reel + Push Web         */
-/* 100% FUNCIONAL - DICIEMBRE 2025                        */
-/* ======================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
     const header = document.querySelector('header');
@@ -234,9 +228,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* ========================================= */
-/* FUNCIONES GLOBALES                        */
-/* ========================================= */
-
 window.toggleReact = (btn, e) => {
     e.stopPropagation();
     btn.classList.toggle('active');
@@ -320,16 +311,13 @@ function showToast(t) {
     setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 600); }, 6000);
 }
 
-/* ======================================================= */
 /* REEL VERTICAL INFINITO + REACCIONES + VOZ EN OFF       */
 /* ABRE AUTOMÁTICO EN MÓVIL                               */
-/* ======================================================= */
 
 (() => {
     if (window.gungo2025) return;
     window.gungo2025 = true;
 
-    // REACCIONES FLOTANTES
     const emojis = ['FIRE', '100', 'SHOCKED FACE', 'PLEADING FACE', 'CLAPPING HANDS', 'PARTY POPPER', 'DOMINICAN REPUBLIC FLAG'];
     let timer;
 
@@ -512,4 +500,5 @@ function showToast(t) {
 
     console.log("GUNGO 2025 FULLY LOADED - Reel + Reacciones + Voz + Push Web");
 })();
+
 
