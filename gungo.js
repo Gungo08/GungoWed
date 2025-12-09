@@ -1,7 +1,4 @@
- /* ======================================================= */
 /* gungo.js - VERSIÓN FINAL DEFINITIVA 2025               */
-/* OPTIMIZACIÓN: Se usa placehold.co como fallback de img  */
-/* ======================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
     const header = document.querySelector('header');
@@ -36,12 +33,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const btn1 = document.createElement('button');
         btn1.className = 'reaction-btn';
         btn1.onclick = e => toggleReact(btn1, e);
-        btn1.innerHTML = `🔥 <span>${Math.floor(Math.random() * 500 + 50)}</span>`; 
+        btn1.innerHTML = `🔥 <span>${Math.floor(Math.random() * 500 + 50)}</span>`; // Añadido Emoji para claridad
 
         const btn2 = document.createElement('button');
         btn2.className = 'reaction-btn';
         btn2.onclick = e => toggleReact(btn2, e);
-        btn2.innerHTML = `😂 <span>${Math.floor(Math.random() * 200 + 10)}</span>`; 
+        btn2.innerHTML = `😂 <span>${Math.floor(Math.random() * 200 + 10)}</span>`; // Añadido Emoji para claridad
 
         const shareBtn = document.createElement('button');
         shareBtn.className = 'share-btn-card';
@@ -61,6 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch('data.json')
         .then(r => r.ok ? r.json() : Promise.reject("Error cargando data.json"))
         .then(data => {
+            // Se garantiza que los datos están cargados antes de ejecutar cualquier lógica
             allNewsData = [...data.newsArticles, ...(data.loadMoreData || [])];
 
             initObserverInstance();
@@ -72,10 +70,12 @@ document.addEventListener("DOMContentLoaded", () => {
             initFilters();
             setupModalListener();
             startLiveNotifications();
+            // Esto asegura que las reacciones flotantes se añadan una vez los artículos están en el DOM
             setTimeout(() => document.querySelectorAll('.news-card').forEach(addReactions), 100); 
 
             searchInput?.addEventListener('input', e => debouncedSearch(e.target.value));
 
+            // Si es móvil, intentar abrir el reel automáticamente después de cargar
              if (window.innerWidth <= 768 || 'ontouchstart' in window) {
                 setTimeout(() => {
                     if (allNewsData.length > 0) openReel();
@@ -177,6 +177,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 this.innerHTML = '¡Estás al día!';
                 this.disabled = true;
                 this.style.opacity = '0.5';
+                 // Re-aplicar reacciones a los nuevos elementos
                 document.querySelectorAll('.news-card').forEach(addReactions); 
             }, 800);
         });
@@ -264,6 +265,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ['touchstart', 'mousedown'].forEach(ev => {
             card.addEventListener(ev, e => {
                 e.preventDefault();
+                // Usamos un timeout más corto para móvil para que se sienta más rápido
                 const delay = (ev === 'touchstart' && window.innerWidth <= 768) ? 300 : 400; 
                 timer = setTimeout(() => {
                     floatEmoji(e, card);
@@ -274,6 +276,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ['touchend', 'touchmove', 'mouseup', 'mouseleave'].forEach(ev => card.addEventListener(ev, () => clearTimeout(timer)));
     }
     
+    // Configuración del estilo de animación de las reacciones flotantes
     if (!document.getElementById('floatUpStyle')) {
         const style = document.createElement('style');
         style.id = 'floatUpStyle';
@@ -343,9 +346,8 @@ document.addEventListener("DOMContentLoaded", () => {
     function createReelItem(article) {
         const div = document.createElement('div');
         div.className = 'reel-item';
-        // Asegúrate de que las imágenes tengan un alto de 100vh para llenar la pantalla
         div.innerHTML = `
-            <img src="${article.image}" alt="${article.title}" loading="lazy" style="height:100vh; object-fit: cover;">
+            <img src="${article.image}" alt="${article.title}" loading="lazy">
             <div class="reel-info">
                 <h3>${article.title}</h3>
                 <p>${article.summary}</p>
@@ -366,7 +368,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function closeReel() {
         reel.classList.remove('active');
         document.body.style.overflow = 'auto';
-        window.speechSynthesis?.cancel();
+        window.speechSynthesis?.cancel(); // Cancelar voz si está activa en el modal de reel
     }
 
     document.getElementById('reelClose')?.addEventListener('click', closeReel);
@@ -374,12 +376,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById('reelLike')?.addEventListener('click', () => {
         const heart = document.createElement('div');
-        heart.textContent = '❤️'; 
+        heart.textContent = '❤️'; // Usar un emoji en lugar de texto
         heart.style.cssText = 'position:fixed;right:40px;bottom:180px;font-size:80px;pointer-events:none;z-index:9999;animation:floatUpHeart 1.2s forwards;';
         document.body.appendChild(heart);
         setTimeout(() => heart.remove(), 1300);
     });
     
+    // Asegurar que la animación del corazón exista
     if (!document.getElementById('reelHeartStyle')) {
         const style = document.createElement('style');
         style.id = 'reelHeartStyle';
@@ -406,11 +409,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Lógica para el scroll infinito del reel (simulación)
+    // Lógica para el scroll infinito del reel
     container?.addEventListener('scroll', () => {
         const index = Math.round(container.scrollTop / window.innerHeight);
+        // Si estamos al final, regresa al inicio para simular infinito
         if (index >= allNewsData.length - 1) {
-             // Si llegamos al último, volvemos al inicio para el efecto infinito
              container.scrollTop = 0;
         }
     });
@@ -475,7 +478,7 @@ window.shareNative = (t, x) => {
         navigator.share({title: t, text: x, url: location.href}).catch(() => {});
     } else {
         navigator.clipboard.writeText(location.href);
-        showToast("Enlace copiado al portapapeles", true); 
+        showToast("Enlace copiado al portapapeles", true); // Usar toast
     }
 };
 
@@ -491,6 +494,7 @@ window.toggleOfficeMode = () => {
 
 window.startLiveNotifications = () => {
     const msgs = ["Filtraron video privado", "Nueva pareja confirmada", "Cancelan concierto", "Tokischa rompe Instagram"];
+    // Dispara notificaciones más seguido para demostración (cada 8 segundos)
     setInterval(() => Math.random() > 0.6 && showToast(msgs[Math.floor(Math.random() * msgs.length)]), 8000); 
 };
 
