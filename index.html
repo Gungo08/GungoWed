@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GUNGO • Farándula y Espectáculos</title>
-    <link rel="icon" type="image/png" href="logo-gungo3.png">
+    <link rel="icon" type="image/png" href="logo-gungo.png">
     <meta name="description" content="Las últimas noticias de farándula, chismes y escándalos.">
     
     <meta property="og:title" content="GUNGO • Noticias que Arde">
@@ -15,34 +15,34 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
 <script>
-  window.OneSignal = window.OneSignal || [];
-  OneSignal.push(function() {
-    OneSignal.init({
-      // ¡IMPORTANTE! Reemplaza este valor con tu ID de App de OneSignal real
-      appId: "TU_APP_ID_AQUI", 
-      safari_web_id: "web.onesignal.auto",
-      notifyButton: {
-        enable: true,
-        position: "bottom-right",
-        theme: "default",
-        size: "medium",
-        showCredit: false,
-        text: {
-          'tip.state.unsubscribed': '¿Quieres recibir notificaciones?',
-          'tip.state.subscribed': '¡Ya recibes notificaciones!',
-          'message.action.subscribed': '¡Gracias por activarlas!',
-          'dialog.main.title': 'Notificaciones GUNGO',
-          'dialog.main.button.subscribe': 'Activar',
-          'dialog.main.button.unsubscribe': 'No, gracias'
+    window.OneSignal = window.OneSignal || [];
+    OneSignal.push(function() {
+      OneSignal.init({
+        // ¡IMPORTANTE! Reemplaza este valor con tu ID de App de OneSignal real
+        appId: "TU_APP_ID_AQUI", 
+        safari_web_id: "web.onesignal.auto",
+        notifyButton: {
+          enable: true,
+          position: "bottom-right",
+          theme: "default",
+          size: "medium",
+          showCredit: false,
+          text: {
+            'tip.state.unsubscribed': '¿Quieres recibir notificaciones?',
+            'tip.state.subscribed': '¡Ya recibes notificaciones!',
+            'message.action.subscribed': '¡Gracias por activarlas!',
+            'dialog.main.title': 'Notificaciones GUNGO',
+            'dialog.main.button.subscribe': 'Activar',
+            'dialog.main.button.unsubscribe': 'No, gracias'
+          }
+        },
+        welcomeNotification: {
+          disable: false,
+          title: "¡Bienvenido a GUNGO!",
+          message: "Aquí arde todo. Activa las notificaciones y nunca te pierdas un chisme."
         }
-      },
-      welcomeNotification: {
-        disable: false,
-        title: "¡Bienvenido a GUNGO!",
-        message: "Aquí arde todo. Activa las notificaciones y nunca te pierdas un chisme."
-      }
+      });
     });
-  });
 </script>
     
     <link rel="stylesheet" href="gungo.css">
@@ -112,11 +112,11 @@
     <div class="footer-content">
         <div>
              <h2 style="font-size:3rem; font-weight:800; position:relative; color:transparent;">
-              <span style="position:absolute; top:0; left:0; background:linear-gradient(45deg,#E50914,#FF6B00,#FFB800); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent;">
-                
-              </span>
-            </h2>
-            <p>Tu dosis diaria de farándula sin filtro.</p>
+             <span style="position:absolute; top:0; left:0; background:linear-gradient(45deg,#E50914,#FF6B00,#FFB800); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent;">
+               
+             </span>
+             </h2>
+             <p>Tu dosis diaria de farándula sin filtro.</p>
         </div>
         <div>
             <h3>Síguenos</h3>
@@ -155,21 +155,6 @@
 </div>
 
 <div id="toast-container" class="toast-container"></div>
-<div id="reelTrigger" title="Abrir Reel Vertical (TikTok Mode)">
-    Reel
-</div>
-
-<div id="verticalReel">
-    <div id="reelClose">×</div>
-    <div id="reelContainer"></div>
-    <div id="reelControls">
-        <button id="reelLike">Like</button>
-        <button id="reelComment">Comment</button>
-        <button id="reelShare">Share</button>
-        <button id="reelVoice">Voice</button>
-    </div>
-</div>
-
 <script src="gungo.js"></script>
 
 </body>
